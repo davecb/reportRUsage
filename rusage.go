@@ -20,9 +20,16 @@ func reportRUsage(name string, start time.Time) {
 			start.Format("2006-01-02 15:04:05.000"), name, os.Getpid())
 		return
 	}
-	fmt.Fprint(os.Stderr, "#date      time         name        pid  utime stime maxrss inblock outblock\n")
-	fmt.Fprintf(os.Stderr, "%s %s %d %f %f %d %d %d\n", start.Format("2006-01-02 15:04:05.000"),
-		name, os.Getpid(), seconds(r.Utime), seconds(r.Stime), r.Maxrss*1024, r.Inblock, r.Oublock)
+	fmt.Fprint(os.Stderr, "#date      time         name         pid  utime stime maxrss " +
+		"minFault majFault inBlock outBlock volCsw involCsw\n")
+	fmt.Fprintf(os.Stderr, "%s %s %d %f %f %d %d %d %d %d %d %d\n",
+		start.Format("2006-01-02 15:04:05.000"),
+		name, os.Getpid(),
+		seconds(r.Utime), seconds(r.Stime),
+		r.Maxrss*1024,
+		r.Minflt, r.Majflt,
+		r.Inblock, r.Oublock,
+		r.Nvcsw, r.Nivcsw)
 }
 
 // seconds converts a syscall.Timeval to seconds
